@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pocket Genie - All-in-One Smart Tools</title>
+  <style>
+    :root {
+      /* Light Mode Colors (Default) */
+      --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      --header-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --text-color: #333;
+      --card-bg: #ffffff;
+      --card-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      --card-shadow-hover: 0 10px 20px rgba(0,0,0,0.15);
+      --input-border: #ddd;
+      --output-color: #333;
+      --theme-button-bg: #fff;
+      --theme-button-icon: '☀️';
+    }
+
+    body.dark-mode {
+      /* Dark Mode Colors */
+      --bg-gradient: linear-gradient(135deg, #232526 0%, #414345 100%);
+      --header-gradient: linear-gradient(135deg, #3a1c71 0%, #d76d77 50%, #ffaf7b 100%);
+      --text-color: #e0e0e0;
+      --card-bg: #2c2c2c;
+      --card-shadow: 0 6px 15px rgba(0,0,0,0.3);
+      --card-shadow-hover: 0 10px 20px rgba(0,0,0,0.4);
+      --input-border: #555;
+      --output-color: #f0f0f0;
+      --theme-button-bg: #444;
+      --theme-button-icon: '🌙';
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-color);
+      text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      background: var(--header-gradient);
+      color: white;
+      padding: 15px 10px;
+      font-size: 1.8em;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 10px;
+      margin-right: 15px;
+    }
+
+    .control-button {
+      background: var(--theme-button-bg);
+      border: 1px solid var(--input-border);
+      padding: 8px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    #theme-toggle::before {
+      content: var(--theme-button-icon);
+      margin-right: 5px;
+    }
+
+    .tools-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: stretch;
+      padding: 20px;
+      gap: 25px;
+    }
+
+    .tool-card {
+      background: var(--card-bg);
+      color: var(--text-color);
+      border-radius: 15px;
+      box-shadow: var(--card-shadow);
+      padding: 25px;
+      width: 300px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--card-shadow-hover);
+    }
+
+    .tool-card h3 {
+      color: #764ba2;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    
+    body.dark-mode .tool-card h3 {
+      color: #ffaf7b;
+    }
+
+    .tool-card input, .tool-card button, .tool-card textarea, .tool-card select {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+      border: 1px solid var(--input-border);
+      background-color: transparent;
+      color: var(--text-color);
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    
+    .tool-card textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .tool-card button {
+      background: var(--header-gradient);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    .output {
+      margin-top: 15px;
+      font-weight: bold;
+      color: var(--output-color);
+      min-height: 40px;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      word-break: break-all;
+    }
+    
+    .ad-container {
+      width: 320px;
+      min-height: 50px;
+      margin: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      header { font-size: 1.5em; }
+      .tool-card { width: calc(50% - 30px); }
+    }
+    
+    @media (max-width: 600px) {
+      .tool-card { width: 90%; }
+      .header-controls { margin-right: 5px; }
+      .control-button { padding: 6px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span style="margin-left: 15px;">🧞‍♂️ Pocket Genie</span>
+    <div class="header-controls">
+      <button id="lang-toggle" class="control-button">हिंदी</button>
+      <button id="theme-toggle" class="control-button"></button>
+    </div>
+  </header>
+
+  <div class="tools-container">
+
+    <!-- Tool 1: Age Calculator -->
+    <div class="tool-card">
+      <h3 data-key="age_title">🎂 Age Calculator</h3>
+      <input type="date" id="dob" />
+      <button onclick="calculateAge()" data-key="calculate_btn">Calculate Age</button>
+      <div class="output" id="ageResult"></div>
+    </div>
+
+    <!-- Tool 2: EMI Calculator -->
+    <div class="tool-card">
+      <h3 data-key="emi_title">💰 EMI Calculator</h3>
+      <input type="number" id="amount" data-key="loan_placeholder" placeholder="Loan Amount" />
+      <input type="number" id="rate" data-key="rate_placeholder" placeholder="Interest Rate (%)" />
+      <input type="number" id="months" data-key="months_placeholder" placeholder="Months" />
+      <button onclick="calculateEMI()" data-key="calculate_btn">Calculate EMI</button>
+      <div class="output" id="emiResult"></div>
+    </div>
+    
+    <!-- Ad after 2 Tools -->
+    <div class="ad-container">
+      <script type="text/javascript">
+        atOptions = {'key' : 'c77e084c35a962fe237bf0bbb8450bff','format' : 'iframe','height' : 50,'width' : 320,'params' : {}};
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/c77e084c35a962fe237bf0bbb8450bff/invoke.js"></script>
+    </div>
+
+    <!-- Tool 3: Love Calculator -->
+    <div class="tool-card">
+      <h3 data-key="love_title">❤️ Love Calculator</h3>
+      <input type="text" id="name1" data-key="your_name_placeholder" placeholder="Your Name" />
+      <input type="text" id="name2" data-key="partner_name_placeholder" placeholder="Partner Name" />
+      <button onclick="calculateLove()" data-key="love_btn">Check Love %</button>
+      <div class="output" id="loveResult"></div>
+    </div>
+
+    <!-- Tool 4: Image to PNG Tool -->
+    <div class="tool-card">
+      <h3 data-key="img_title">🖼️ Image to PNG</h3>
+      <input type="file" id="imageInput" accept="image/*" />
+      <button onclick="convertToPNG()" data-key="convert_btn">Convert</button>
+      <div class="output" id="pngResult"></div>
+    </div>
+
+    <!-- Ad after 4 Tools -->
+    <div class="ad-container">
+      <script type="text/javascript">
+        atOptions = {'key' : 'c77e084c35a962fe237bf0bbb8450bff','format' : 'iframe','height' : 50,'width' : 320,'params' : {}};
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/c77e084c35a962fe237bf0bbb8450bff/invoke.js"></script>
+    </div>
+
+    <!-- Tool 5: Shayari Generator -->
+    <div class="tool-card">
+      <h3 data-key="shayari_title">📝 Shayari Generator</h3>
+      <button onclick="generateShayari()" data-key="shayari_btn">Generate Shayari</button>
+      <div class="output" id="shayariResult"></div>
+    </div>
+
+    <!-- Tool 6: BMI Calculator -->
+    <div class="tool-card">
+      <h3 data-key="bmi_title">🏋️ BMI Calculator</h3>
+      <input type="number" id="weight" data-key="weight_placeholder" placeholder="Weight (kg)" />
+      <input type="number" id="height" data-key="height_placeholder" placeholder="Height (cm)" />
+      <button onclick="calculateBMI()" data-key="calculate_btn">Calculate BMI</button>
+      <div class="output" id="bmiOutput"></div>
+    </div>
+    
+    <!-- Ad after 6 Tools -->
+    <div class="ad-container">
+      <script type="text/javascript">
+        atOptions = {'key' : 'c77e084c35a962fe237bf0bbb8450bff','format' : 'iframe','height' : 50,'width' : 320,'params' : {}};
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/c77e084c35a962fe237bf0bbb8450bff/invoke.js"></script>
+    </div>
+
+    <!-- Tool 7: Tip Calculator -->
+    <div class="tool-card">
+      <h3 data-key="tip_title">🍽️ Tip Calculator</h3>
+      <input type="number" id="bill" data-key="bill_placeholder" placeholder="Total Bill" />
+      <input type="number" id="tip" data-key="tip_placeholder" placeholder="Tip %" />
+      <button onclick="calculateTip()" data-key="calculate_btn">Calculate Tip</button>
+      <div class="output" id="tipResult"></div>
+    </div>
+
+    <!-- Tool 8: Word Counter -->
+    <div class="tool-card">
+        <h3 data-key="word_title">🔠 Word Counter</h3>
+        <textarea id="wordInput" data-key="word_placeholder" placeholder="Type or paste your text here..."></textarea>
+        <button onclick="countWords()" data-key="word_btn">Count Words</button>
+        <div class="output" id="wordResult"></div>
+    </div>
+
+    <!-- Ad after 8 Tools -->
+    <div class="ad-container">
+      <script type="text/javascript">
+        atOptions = {'key' : 'c77e084c35a962fe237bf0bbb8450bff','format' : 'iframe','height' : 50,'width' : 320,'params' : {}};
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/c77e084c35a962fe237bf0bbb8450bff/invoke.js"></script>
+    </div>
+
+    <!-- Tool 9: Password Generator -->
+    <div class="tool-card">
+        <h3 data-key="pass_title">🔑 Password Generator</h3>
+        <input type="number" id="passLength" value="12" data-key="pass_placeholder" placeholder="Password Length" />
+        <button onclick="generatePassword()" data-key="pass_btn">Generate Password</button>
+        <div class="output" id="passResult" style="cursor: pointer;" title="Click to copy"></div>
+    </div>
+
+    <!-- Tool 10: Case Converter -->
+    <div class="tool-card">
+        <h3 data-key="case_title">🔄 Case Converter</h3>
+        <textarea id="caseInput" data-key="case_placeholder" placeholder="Enter text to convert..."></textarea>
+        <button onclick="convertCase('upper')" data-key="case_upper_btn">UPPERCASE</button>
+        <button onclick="convertCase('lower')" data-key="case_lower_btn">lowercase</button>
+    </div>
+
+  </div>
+
+  <script>
+    // --- TRANSLATION DATA ---
+    const translations = {
+      en: {
+        age_title: "🎂 Age Calculator",
+        calculate_btn: "Calculate",
+        age_result: "Your age is {age} years.",
+        dob_alert: "Please select a date of birth.",
+        emi_title: "💰 EMI Calculator",
+        loan_placeholder: "Loan Amount",
+        rate_placeholder: "Interest Rate (%)",
+        months_placeholder: "Months",
+        emi_result: "Monthly EMI: ₹{emi}",
+        emi_alert: "Please enter valid loan details.",
+        love_title: "❤️ Love Calculator",
+        your_name_placeholder: "Your Name",
+        partner_name_placeholder: "Partner Name",
+        love_btn: "Check Love %",
+        love_result: "Love Compatibility: {percent}% 💕",
+        love_alert: "Please enter both names.",
+        img_title: "🖼️ Image to PNG",
+        convert_btn: "Convert",
+        img_alert: "Upload an image first.",
+        img_result: "Converted to PNG! ✅",
+        shayari_title: "📝 Shayari Generator",
+        shayari_btn: "Generate Shayari",
+        bmi_title: "🏋️ BMI Calculator",
+        weight_placeholder: "Weight (kg)",
+        height_placeholder: "Height (cm)",
+        bmi_result: "Your BMI is {bmi}",
+        bmi_alert: "Please enter valid weight and height.",
+        tip_title: "🍽️ Tip Calculator",
+        bill_placeholder: "Total Bill",
+        tip_placeholder: "Tip %",
+        tip_result: "Tip Amount: ₹{amount}",
+        tip_alert: "Please enter a valid bill amount and tip percentage.",
+        word_title: "🔠 Word Counter",
+        word_placeholder: "Type or paste your text here...",
+        word_btn: "Count Words",
+        word_result: "Words: {words} | Characters: {chars}",
+        pass_title: "🔑 Password Generator",
+        pass_placeholder: "Password Length",
+        pass_btn: "Generate Password",
+        pass_copied: "Password Copied!",
+        case_title: "🔄 Case Converter",
+        case_placeholder: "Enter text to convert...",
+        case_upper_btn: "UPPERCASE",
+        case_lower_btn: "lowercase",
+        lang_btn: "हिंदी"
+      },
+      hi: {
+        age_title: "🎂 आयु कैलकुलेटर",
+        calculate_btn: "गणना करें",
+        age_result: "आपकी आयु {age} वर्ष है।",
+        dob_alert: "कृपया जन्मतिथि चुनें।",
+        emi_title: "💰 ईएमआई कैलकुलेटर",
+        loan_placeholder: "लोन राशि",
+        rate_placeholder: "ब्याज दर (%)",
+        months_placeholder: "महीने",
+        emi_result: "मासिक ईएमआई: ₹{emi}",
+        emi_alert: "कृपया सही लोन विवरण दर्ज करें।",
+        love_title: "❤️ लव कैलकुलेटर",
+        your_name_placeholder: "आपका नाम",
+        partner_name_placeholder: "साथी का नाम",
+        love_btn: "प्यार % जांचें",
+        love_result: "प्यार की संगतता: {percent}% 💕",
+        love_alert: "कृपया दोनों नाम दर्ज करें।",
+        img_title: "🖼️ इमेज से पीएनजी",
+        convert_btn: "बदलें",
+        img_alert: "पहले एक इमेज अपलोड करें।",
+        img_result: "PNG में बदल गया! ✅",
+        shayari_title: "📝 शायरी जेनरेटर",
+        shayari_btn: "शायरी उत्पन्न करें",
+        bmi_title: "🏋️ बीएमआई कैलकुलेटर",
+        weight_placeholder: "वजन (किलो)",
+        height_placeholder: "ऊंचाई (सेमी)",
+        bmi_result: "आपका बीएमआई {bmi} है",
+        bmi_alert: "कृपया सही वजन और ऊंचाई दर्ज करें।",
+        tip_title: "🍽️ टिप कैलकुलेटर",
+        bill_placeholder: "कुल बिल",
+        tip_placeholder: "टिप %",
+        tip_result: "टिप राशि: ₹{amount}",
+        tip_alert: "कृपया एक वैध बिल राशि और टिप प्रतिशत दर्ज करें।",
+        word_title: "🔠 शब्द गणक",
+        word_placeholder: "अपना टेक्स्ट यहां टाइप या पेस्ट करें...",
+        word_btn: "शब्द गिनें",
+        word_result: "शब्द: {words} | अक्षर: {chars}",
+        pass_title: "🔑 पासवर्ड जेनरेटर",
+        pass_placeholder: "पासवर्ड की लंबाई",
+        pass_btn: "पासवर्ड बनाएं",
+        pass_copied: "पासवर्ड कॉपी हो गया!",
+        case_title: "🔄 केस कनवर्टर",
+        case_placeholder: "बदलने के लिए टेक्स्ट दर्ज करें...",
+        case_upper_btn: "बड़े अक्षर",
+        case_lower_btn: "छोटे अक्षर",
+        lang_btn: "English"
+      }
+    };
+    
+    // --- LANGUAGE AND THEME LOGIC ---
+    document.addEventListener('DOMContentLoaded', function() {
+        const langToggle = document.getElementById('lang-toggle');
+        const themeToggle = document.getElementById('theme-toggle');
+        let currentLang = localStorage.getItem('pocketGenieLang') || 'en';
+        let currentTheme = localStorage.getItem('pocketGenieTheme') || 'light';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('pocketGenieLang', lang);
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                const translation = translations[lang][key];
+                if (translation) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = translation;
+                    } else {
+                        el.innerText = translation;
+                    }
+                }
+            });
+            langToggle.innerText = translations[lang].lang_btn;
+        }
+
+        function setTheme(theme) {
+            currentTheme = theme;
+            localStorage.setItem('pocketGenieTheme', theme);
+            document.body.className = theme === 'dark' ? 'dark-mode' : '';
+        }
+
+        langToggle.addEventListener('click', () => {
+            setLanguage(currentLang === 'en' ? 'hi' : 'en');
+        });
+
+        themeToggle.addEventListener('click', () => {
+            setTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
+
+        // Apply saved settings on load
+        setLanguage(currentLang);
+        setTheme(currentTheme);
+    });
+
+    // --- TOOL FUNCTIONS ---
+    function getTranslation(key, replacements = {}) {
+        const lang = localStorage.getItem('pocketGenieLang') || 'en';
+        let text = translations[lang][key] || key;
+        for (const placeholder in replacements) {
+            text = text.replace(`{${placeholder}}`, replacements[placeholder]);
+        }
+        return text;
+    }
+
+    function showAlert(key) {
+        alert(getTranslation(key));
+    }
+
+    function calculateAge() {
+      const dobInput = document.getElementById('dob').value;
+      if (!dobInput) return showAlert('dob_alert');
+      const dob = new Date(dobInput);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+      document.getElementById('ageResult').innerText = getTranslation('age_result', {age: age});
+    }
+
+    function calculateEMI() {
+      const P = +document.getElementById('amount').value;
+      const R = +document.getElementById('rate').value / 12 / 100;
+      const N = +document.getElementById('months').value;
+      if(P <= 0 || R < 0 || N <= 0) return showAlert('emi_alert');
+      const emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+      document.getElementById('emiResult').innerText = getTranslation('emi_result', {emi: emi.toFixed(2)});
+    }
+
+    function calculateLove() {
+      const name1 = document.getElementById('name1').value.trim();
+      const name2 = document.getElementById('name2').value.trim();
+      if (name1 === "" || name2 === "") return showAlert('love_alert');
+      const sum = (name1 + name2).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const percent = sum % 101;
+      document.getElementById('loveResult').innerText = getTranslation('love_result', {percent: percent});
+    }
+
+    function convertToPNG() {
+      const input = document.getElementById('imageInput');
+      const file = input.files[0];
+      if (!file) return showAlert('img_alert');
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width; canvas.height = img.height;
+          const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0);
+          const link = document.createElement('a');
+          link.download = file.name.split('.')[0] + ".png";
+          link.href = canvas.toDataURL("image/png");
+          document.body.appendChild(link); link.click(); document.body.removeChild(link);
+          document.getElementById('pngResult').innerText = getTranslation('img_result');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function generateShayari() {
+      const shayaris = [
+        "तेरी मोहब्बत से सांसे मिली हैं, वर्ना जीने का कोई अंदाज नहीं था।", "दर्द ही सही मेरे इश्क़ का इनाम तो आया, खाली ही सही मगर कोई पैग़ाम तो आया।", "तेरे ख्याल से खुद को छुपा के देखा है, दिल और नजर को रुला के देखा है।", "ख्वाबों में बसाया है तुझे, तेरी हकीकत कौन भूले!", "एक अजीब सी बेताबी है तेरे बिन, रह भी लेते हैं और रहा भी नहीं जाता।"
+      ];
+      document.getElementById('shayariResult').innerText = shayaris[Math.floor(Math.random() * shayaris.length)];
+    }
+
+    function calculateBMI() {
+      const weight = +document.getElementById('weight').value;
+      const height = +document.getElementById('height').value / 100;
+      if (weight <= 0 || height <= 0) return showAlert('bmi_alert');
+      const bmi = weight / (height * height);
+      document.getElementById('bmiOutput').innerText = getTranslation('bmi_result', {bmi: bmi.toFixed(2)});
+    }
+
+    function calculateTip() {
+      const bill = +document.getElementById('bill').value;
+      const tipPercent = +document.getElementById('tip').value;
+      if (bill <= 0 || tipPercent < 0) return showAlert('tip_alert');
+      const tipAmount = (bill * tipPercent) / 100;
+      document.getElementById('tipResult').innerText = getTranslation('tip_result', {amount: tipAmount.toFixed(2)});
+    }
+
+    function countWords() {
+        const text = document.getElementById('wordInput').value;
+        const words = text.trim().split(/\s+/).filter(Boolean).length;
+        const chars = text.length;
+        document.getElementById('wordResult').innerText = getTranslation('word_result', {words: words, chars: chars});
+    }
+
+    function generatePassword() {
+        const length = +document.getElementById('passLength').value || 12;
+        const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+        let password = "";
+        for (let i = 0; i < length; i++) {
+            password += charset.charAt(Math.floor(Math.random() * charset.length));
+        }
+        const passResult = document.getElementById('passResult');
+        passResult.innerText = password;
+        passResult.onclick = function() {
+            navigator.clipboard.writeText(password).then(() => {
+                alert(getTranslation('pass_copied'));
+            });
+        };
+    }
+    
+    function convertCase(type) {
+        const input = document.getElementById('caseInput');
+        if (type === 'upper') {
+            input.value = input.value.toUpperCase();
+        } else if (type === 'lower') {
+            input.value = input.value.toLowerCase();
+        }
+    }
+  </script>
+</body>
+</html>
